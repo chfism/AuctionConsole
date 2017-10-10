@@ -1,0 +1,6 @@
+D:\Auction\AuctionConsole\AuctionSocketClientConsole\bin\Debug\AuctionClient.exe.config
+D:\Auction\AuctionConsole\AuctionSocketClientConsole\bin\Debug\AuctionClient.exe
+D:\Auction\AuctionConsole\AuctionSocketClientConsole\bin\Debug\AuctionClient.pdb
+D:\Auction\AuctionConsole\AuctionSocketClientConsole\obj\Debug\AuctionSocketClientConsole.csproj.CoreCompileInputs.cache
+D:\Auction\AuctionConsole\AuctionSocketClientConsole\obj\Debug\AuctionClient.exe
+D:\Auction\AuctionConsole\AuctionSocketClientConsole\obj\Debug\AuctionClient.pdb
