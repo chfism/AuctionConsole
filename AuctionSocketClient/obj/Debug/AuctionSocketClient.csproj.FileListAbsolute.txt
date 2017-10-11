@@ -1,0 +1,16 @@
+D:\My Projects\AuctionConsole\AuctionSocketClient\bin\Debug\AuctionSocketClient.exe.config
+D:\My Projects\AuctionConsole\AuctionSocketClient\bin\Debug\AuctionSocketClient.exe
+D:\My Projects\AuctionConsole\AuctionSocketClient\bin\Debug\AuctionSocketClient.pdb
+D:\My Projects\AuctionConsole\AuctionSocketClient\obj\Debug\AuctionSocketClient.csprojResolveAssemblyReference.cache
+D:\My Projects\AuctionConsole\AuctionSocketClient\obj\Debug\AuctionSocketClient.MainFrm.resources
+D:\My Projects\AuctionConsole\AuctionSocketClient\obj\Debug\AuctionSocketClient.Properties.Resources.resources
+D:\My Projects\AuctionConsole\AuctionSocketClient\obj\Debug\AuctionSocketClient.csproj.GenerateResource.Cache
+D:\My Projects\AuctionConsole\AuctionSocketClient\obj\Debug\AuctionSocketClient.exe
+D:\My Projects\AuctionConsole\AuctionSocketClient\obj\Debug\AuctionSocketClient.pdb
+D:\My Projects\AuctionConsole\AuctionSocketClient\bin\Debug\log4net.dll
+D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient.csprojResolveAssemblyReference.cache
+D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient.MainFrm.resources
+D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient.Properties.Resources.resources
+D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient.csproj.GenerateResource.Cache
+D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient.exe
+D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient.pdb

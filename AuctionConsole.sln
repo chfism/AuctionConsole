@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSocketClientConsole", "AuctionSocketClientConsole\AuctionSocketClientConsole.csproj", "{91632BB5-9935-4003-9838-FE390480242A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSocketClient", "AuctionSocketClient\AuctionSocketClient.csproj", "{715A2C78-9410-4192-B333-973E122C95DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{91632BB5-9935-4003-9838-FE390480242A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91632BB5-9935-4003-9838-FE390480242A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91632BB5-9935-4003-9838-FE390480242A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{715A2C78-9410-4192-B333-973E122C95DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{715A2C78-9410-4192-B333-973E122C95DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{715A2C78-9410-4192-B333-973E122C95DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{715A2C78-9410-4192-B333-973E122C95DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
