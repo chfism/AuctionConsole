@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.logOutPut = new System.Windows.Forms.RichTextBox();
+            this.btnStop = new System.Windows.Forms.Button();
             this.btnOnline = new System.Windows.Forms.Button();
             this.lbIP = new System.Windows.Forms.Label();
             this.comboIP = new System.Windows.Forms.ComboBox();
             this.btnStart = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -52,6 +55,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.btnStop);
             this.splitContainer1.Panel2.Controls.Add(this.btnOnline);
             this.splitContainer1.Panel2.Controls.Add(this.lbIP);
             this.splitContainer1.Panel2.Controls.Add(this.comboIP);
@@ -68,6 +72,17 @@
             this.logOutPut.Size = new System.Drawing.Size(579, 501);
             this.logOutPut.TabIndex = 0;
             this.logOutPut.Text = "";
+            // 
+            // btnStop
+            // 
+            this.btnStop.Enabled = false;
+            this.btnStop.Location = new System.Drawing.Point(130, 40);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(95, 23);
+            this.btnStop.TabIndex = 4;
+            this.btnStop.Text = "Stop";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // btnOnline
             // 
@@ -112,6 +127,10 @@
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -120,6 +139,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Name = "MainFrm";
             this.Text = "AuctionSocketClient";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainFrm_FormClosed);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
@@ -137,6 +157,8 @@
         private System.Windows.Forms.Label lbIP;
         private System.Windows.Forms.ComboBox comboIP;
         private System.Windows.Forms.Button btnOnline;
+        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
