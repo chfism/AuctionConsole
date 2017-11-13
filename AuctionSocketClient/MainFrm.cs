@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.Collections;
 using log4net;
+using System.Web;
 
 namespace AuctionSocketClient
 {
@@ -25,7 +26,7 @@ namespace AuctionSocketClient
             host = comboIP.SelectedItem.ToString();
             if (debug)
             {
-                host = "10.80.65.100";
+                host = "192.168.1.180";
             }
             ip = IPAddress.Parse(host);
             ipe = new IPEndPoint(ip, port);
@@ -33,11 +34,11 @@ namespace AuctionSocketClient
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             
         }
-
+        //uid=54465795&uname=鲍洁莹&clientId=42b198991e44411087d5dce78ab18e3c&tradeserverstr=180.153.29.213:8300,180.153.15.118:8300,180.153.24.227:8300,180.153.38.219:8300&informationserverstr=&webserverstr=paimai2.alltobid.com:80&lcserverstr=&auctype=0&pwd=6e08e2b216444285aa310a8785129cd3
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static string key = "ji!@p!a".Substring(2, 5);
-        private static string clientId = "27d8ead720994414bb4931ef3b2bafeb";
-        private static string bidnumber = "54297820";
+        private static string clientId = "42b198991e44411087d5dce78ab18e3c";
+        private static string bidnumber = "54465795";
         private static string version = "1.0";
         //private static bool stop = false;
         private static Queue MessageQueue;
@@ -61,11 +62,16 @@ namespace AuctionSocketClient
                 {
                     string recStr = "";
                     byte[] recBytes = new byte[4096];
+
+                    //byte[] t = new byte[] { 20 };
+
+                    Thread.Sleep(100);
                     int bytes = clientSocket.Receive(recBytes, recBytes.Length, 0);
                     //Online XXTEA Decrypt https://www.tools4noobs.com/online_tools/xxtea_decrypt/
-                    recStr += "CurrentTime" + DateTime.Now.ToLongTimeString() + ": ";
-                    recStr += Encoding.UTF8.GetString(recBytes, 0, bytes);
-                    //recStr += Encoding.GetEncoding("GB2312").GetString(recBytes, 0, bytes);
+                    recStr += "CurrentTime:" + DateTime.Now.ToString("yyyyMMddHHmmssfff") +": ";
+                    //recStr += Encoding.UTF8.GetString(recBytes, 0, bytes);
+                    recStr += Encoding.GetEncoding("GB2312").GetString(recBytes, 0, bytes);
+
                     recStr += "\r\n";
                     MessageQueue.Enqueue(recStr);                   
                     Thread.Sleep(100);
@@ -77,12 +83,12 @@ namespace AuctionSocketClient
 
         private void btnOnline_Click(object sender, EventArgs e)
         {
-            //this.currenttime = String(_currentdate.getHours()) + String(_currentdate.getMinutes()) + String(_currentdate.getSeconds()) + String(_currentdate.getMilliseconds());
-            var currenttime = DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString();
+            var currenttime = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             var requestid = bidnumber + ".f" + currenttime;
             var checkcode = MD5ToString(clientId + bidnumber + version + requestid + version + currenttime).ToLower();
             //var ByteArrayCollection;
             var _rawdata = "{requestid:\"" + requestid + "\",timestamp:\"" + currenttime + "\",bidnumber:\"" + bidnumber + "\",checkcode:\"" + checkcode + "\",version:\"" + version + "\"}";
+            //TODO:  XXTEA.Base64Encrypte??
             //string _encryptedstr = XXTEA.Base64Encrypted(_rawdata);
             //ByteArrayCollection.toStr(_encryptedstr);
 
@@ -149,10 +155,74 @@ namespace AuctionSocketClient
                 log.Info(message);
             }         
         }
-
         private void MainFrm_FormClosed(object sender, FormClosedEventArgs e)
         {
             clientSocket.Close();
+        }
+
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            //TODO: need to record the server and data next time
+            var request = (HttpWebRequest)WebRequest.Create("https://uat-oeapi.marykayintouch.com.cn/ConsultantAgreementAppServices//command?format=json");
+
+            
+            var postData = "{\"_Timezone\":\" + 0800\",\"_ClientKey\":\"MobileApp\",\"_Culture\":\"zh - CN\",\"_UserName\":\"ApplyVIP\",\"_SubsidiaryCode\":\"CN\",\"_UICulture\":\"zh\"}";
+       
+            var data = Encoding.ASCII.GetBytes(postData);
+
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentLength = data.Length;
+
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+
+            var response = (HttpWebResponse)request.GetResponse();
+
+            var responseString = new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd();
+        }
+
+        private void btnPostBidCMD_Click(object sender, EventArgs e)
+        {
+            Random rdm = new Random();
+
+            var request = (HttpWebRequest)WebRequest.Create("http://paimai2.alltobid.com:80/webwcf/BidCmd.svc/WebCmd?p="+ rdm.NextDouble());
+
+            var postData = GetImageCode();
+
+            var data = Encoding.ASCII.GetBytes(postData);
+
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.ContentLength = data.Length;
+
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+
+            var response = (HttpWebResponse)request.GetResponse();
+
+            var responseString = new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd();
+        }
+
+        private static string GetImageCode()
+        {
+            var currenttime = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string _loc1_ = bidnumber + "." + currenttime; //80658434.20171023140000
+
+            byte[] result = Encoding.Default.GetBytes(_loc1_ + currenttime + version);
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] output = md5.ComputeHash(result);
+            string checkcode = BitConverter.ToString(output).Replace("-", "").ToLower();
+
+     
+            string _loc3_ = "{requestid:\"" + _loc1_ + "\",timestamp:\"" + currenttime + "\",bidnumber:\"" + bidnumber + "\",checkcode:\"" + checkcode + "\",version:\"" + version + "\"}";
+  
+            var _loc5_ = "{\"method\":\"getimagecode\",\"cmd\":\"" + HttpUtility.UrlEncode(_loc3_) + "\"}";
+            return _loc5_;
         }
     }
 }
