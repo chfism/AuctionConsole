@@ -15,3 +15,5 @@ D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient
 D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient.exe
 D:\My Projects\AuctionConsole2\AuctionSocketClient\obj\Debug\AuctionSocketClient.pdb
 D:\My Projects\AuctionConsole\AuctionSocketClient\bin\Debug\Log4Net.config
+D:\My Projects\AuctionConsole\AuctionSocketClient\bin\Debug\Newtonsoft.Json.dll
+D:\My Projects\AuctionConsole\AuctionSocketClient\bin\Debug\Newtonsoft.Json.xml

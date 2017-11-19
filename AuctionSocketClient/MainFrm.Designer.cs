@@ -31,18 +31,21 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.logOutPut = new System.Windows.Forms.RichTextBox();
+            this.textBoxImageCode = new System.Windows.Forms.TextBox();
+            this.pictureBoxLogin = new System.Windows.Forms.PictureBox();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnOnline = new System.Windows.Forms.Button();
             this.lbIP = new System.Windows.Forms.Label();
             this.comboIP = new System.Windows.Forms.ComboBox();
             this.btnStart = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.btnLogin = new System.Windows.Forms.Button();
-            this.btnPostBidCMD = new System.Windows.Forms.Button();
+            this.btnGetImageCode = new System.Windows.Forms.Button();
+            this.btnLogon = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogin)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -57,8 +60,10 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.btnPostBidCMD);
-            this.splitContainer1.Panel2.Controls.Add(this.btnLogin);
+            this.splitContainer1.Panel2.Controls.Add(this.btnLogon);
+            this.splitContainer1.Panel2.Controls.Add(this.btnGetImageCode);
+            this.splitContainer1.Panel2.Controls.Add(this.textBoxImageCode);
+            this.splitContainer1.Panel2.Controls.Add(this.pictureBoxLogin);
             this.splitContainer1.Panel2.Controls.Add(this.btnStop);
             this.splitContainer1.Panel2.Controls.Add(this.btnOnline);
             this.splitContainer1.Panel2.Controls.Add(this.lbIP);
@@ -77,10 +82,25 @@
             this.logOutPut.TabIndex = 0;
             this.logOutPut.Text = "";
             // 
+            // textBoxImageCode
+            // 
+            this.textBoxImageCode.Location = new System.Drawing.Point(130, 63);
+            this.textBoxImageCode.Name = "textBoxImageCode";
+            this.textBoxImageCode.Size = new System.Drawing.Size(100, 21);
+            this.textBoxImageCode.TabIndex = 10;
+            // 
+            // pictureBoxLogin
+            // 
+            this.pictureBoxLogin.Location = new System.Drawing.Point(17, 41);
+            this.pictureBoxLogin.Name = "pictureBoxLogin";
+            this.pictureBoxLogin.Size = new System.Drawing.Size(100, 50);
+            this.pictureBoxLogin.TabIndex = 9;
+            this.pictureBoxLogin.TabStop = false;
+            // 
             // btnStop
             // 
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(130, 93);
+            this.btnStop.Location = new System.Drawing.Point(118, 284);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(95, 23);
             this.btnStop.TabIndex = 4;
@@ -90,7 +110,7 @@
             // 
             // btnOnline
             // 
-            this.btnOnline.Location = new System.Drawing.Point(17, 135);
+            this.btnOnline.Location = new System.Drawing.Point(17, 313);
             this.btnOnline.Name = "btnOnline";
             this.btnOnline.Size = new System.Drawing.Size(147, 23);
             this.btnOnline.TabIndex = 3;
@@ -102,7 +122,7 @@
             // 
             this.lbIP.AutoSize = true;
             this.lbIP.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lbIP.Location = new System.Drawing.Point(14, 56);
+            this.lbIP.Location = new System.Drawing.Point(14, 252);
             this.lbIP.Name = "lbIP";
             this.lbIP.Size = new System.Drawing.Size(74, 17);
             this.lbIP.TabIndex = 2;
@@ -116,14 +136,14 @@
             "180.153.15.118",
             "180.153.38.219",
             "180.153.24.227"});
-            this.comboIP.Location = new System.Drawing.Point(104, 56);
+            this.comboIP.Location = new System.Drawing.Point(104, 249);
             this.comboIP.Name = "comboIP";
             this.comboIP.Size = new System.Drawing.Size(121, 20);
             this.comboIP.TabIndex = 1;
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(17, 93);
+            this.btnStart.Location = new System.Drawing.Point(17, 284);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(95, 23);
             this.btnStart.TabIndex = 0;
@@ -135,25 +155,25 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // btnLogin
+            // btnGetImageCode
             // 
-            this.btnLogin.Location = new System.Drawing.Point(17, 12);
-            this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(95, 23);
-            this.btnLogin.TabIndex = 6;
-            this.btnLogin.Text = "Login";
-            this.btnLogin.UseVisualStyleBackColor = true;
-            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            this.btnGetImageCode.Location = new System.Drawing.Point(17, 12);
+            this.btnGetImageCode.Name = "btnGetImageCode";
+            this.btnGetImageCode.Size = new System.Drawing.Size(95, 23);
+            this.btnGetImageCode.TabIndex = 11;
+            this.btnGetImageCode.Text = "GetImageCode";
+            this.btnGetImageCode.UseVisualStyleBackColor = true;
+            this.btnGetImageCode.Click += new System.EventHandler(this.btnGetImageCode_Click);
             // 
-            // btnPostBidCMD
+            // btnLogon
             // 
-            this.btnPostBidCMD.Location = new System.Drawing.Point(130, 12);
-            this.btnPostBidCMD.Name = "btnPostBidCMD";
-            this.btnPostBidCMD.Size = new System.Drawing.Size(95, 23);
-            this.btnPostBidCMD.TabIndex = 7;
-            this.btnPostBidCMD.Text = "PostBidCmd";
-            this.btnPostBidCMD.UseVisualStyleBackColor = true;
-            this.btnPostBidCMD.Click += new System.EventHandler(this.btnPostBidCMD_Click);
+            this.btnLogon.Location = new System.Drawing.Point(17, 114);
+            this.btnLogon.Name = "btnLogon";
+            this.btnLogon.Size = new System.Drawing.Size(95, 23);
+            this.btnLogon.TabIndex = 12;
+            this.btnLogon.Text = "Login";
+            this.btnLogon.UseVisualStyleBackColor = true;
+            this.btnLogon.Click += new System.EventHandler(this.btnLogon_Click);
             // 
             // MainFrm
             // 
@@ -169,6 +189,7 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogin)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -183,8 +204,10 @@
         private System.Windows.Forms.Button btnOnline;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Button btnLogin;
-        private System.Windows.Forms.Button btnPostBidCMD;
+        private System.Windows.Forms.PictureBox pictureBoxLogin;
+        private System.Windows.Forms.TextBox textBoxImageCode;
+        private System.Windows.Forms.Button btnGetImageCode;
+        private System.Windows.Forms.Button btnLogon;
     }
 }
 

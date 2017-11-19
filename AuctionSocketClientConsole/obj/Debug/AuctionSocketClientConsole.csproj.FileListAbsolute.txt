@@ -7,6 +7,5 @@ D:\Auction\AuctionConsole\AuctionSocketClientConsole\obj\Debug\AuctionClient.pdb
 D:\My Projects\AuctionConsole\AuctionSocketClientConsole\bin\Debug\AuctionClient.exe.config
 D:\My Projects\AuctionConsole\AuctionSocketClientConsole\bin\Debug\AuctionClient.exe
 D:\My Projects\AuctionConsole\AuctionSocketClientConsole\bin\Debug\AuctionClient.pdb
-D:\My Projects\AuctionConsole\AuctionSocketClientConsole\obj\Debug\AuctionSocketClientConsole.csprojResolveAssemblyReference.cache
 D:\My Projects\AuctionConsole\AuctionSocketClientConsole\obj\Debug\AuctionClient.exe
 D:\My Projects\AuctionConsole\AuctionSocketClientConsole\obj\Debug\AuctionClient.pdb

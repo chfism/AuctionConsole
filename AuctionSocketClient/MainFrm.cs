@@ -9,6 +9,8 @@ using System.Security.Cryptography;
 using System.Collections;
 using log4net;
 using System.Web;
+using AuctionSocketClient.Dto;
+using Newtonsoft.Json;
 
 namespace AuctionSocketClient
 {
@@ -18,8 +20,25 @@ namespace AuctionSocketClient
         private string host = "";
         private IPAddress ip;
         private IPEndPoint ipe;
+
+        private string _version = "1.0";
+        private string _timestamp = "1510973511872";
+        private string _bidnumber = "54397068";
+        private string _requestid = "1510973511873";
+        private string _checkcode = "8906ea80b9693d0401305f458e069fbf";
+        private string _info = "Win7;ie:11;27";
+        private string _uniqueid = "3451a8e7-0760-4a42-87f9-317fb509ab42";
+        private string _bidpassword = "912ca04c3a2c1e871e768957246d18f0";
+        private string _imagenumber = "736424";
+        private string _idcard = "";
+        private string _clientId = "";
+        private string _idtype = "0";
+
         public MainFrm()
         {
+
+
+
             MessageQueue = new Queue();
             InitializeComponent();
             comboIP.SelectedIndex = 0;
@@ -160,43 +179,38 @@ namespace AuctionSocketClient
             clientSocket.Close();
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+
+        private void btnGetImageCode_Click(object sender, EventArgs e)
         {
-            //TODO: need to record the server and data next time
-            var request = (HttpWebRequest)WebRequest.Create("https://uat-oeapi.marykayintouch.com.cn/ConsultantAgreementAppServices//command?format=json");
+            var request = (HttpWebRequest)WebRequest.Create("https://paimai2.alltobid.com/webwcf/BidCmd.svc/WebCmd");
 
-            
-            var postData = "{\"_Timezone\":\" + 0800\",\"_ClientKey\":\"MobileApp\",\"_Culture\":\"zh - CN\",\"_UserName\":\"ApplyVIP\",\"_SubsidiaryCode\":\"CN\",\"_UICulture\":\"zh\"}";
-       
-            var data = Encoding.ASCII.GetBytes(postData);
-
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = data.Length;
-
-            using (var stream = request.GetRequestStream())
+            var dto = new ImageCodeDto
             {
-                stream.Write(data, 0, data.Length);
-            }
+                version = _version,
+                timestamp = _timestamp,
+                requestid = _requestid,
+                request = "", //request={}
+                checkcode = _checkcode,
+            };
 
-            var response = (HttpWebResponse)request.GetResponse();
+            var json = JsonConvert.SerializeObject(dto);
+            var encodedJson = HttpUtility.UrlEncode(json);
 
-            var responseString = new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd();
-        }
+            var postData = new WebCmdDto
+            {
+                method = "getimagecode",
+                cmd = encodedJson
+            };
 
-        private void btnPostBidCMD_Click(object sender, EventArgs e)
-        {
-            Random rdm = new Random();
+            var postDataJson = JsonConvert.SerializeObject(postData);
 
-            var request = (HttpWebRequest)WebRequest.Create("http://paimai2.alltobid.com:80/webwcf/BidCmd.svc/WebCmd?p="+ rdm.NextDouble());
-
-            var postData = GetImageCode();
-
-            var data = Encoding.ASCII.GetBytes(postData);
+            var data = Encoding.ASCII.GetBytes(postDataJson);
 
             request.Method = "POST";
             request.ContentType = "application/json";
             request.ContentLength = data.Length;
+            request.Referer = "https://paimai2.alltobid.com/bid/2017111801/login.htm";
+
 
             using (var stream = request.GetRequestStream())
             {
@@ -204,25 +218,61 @@ namespace AuctionSocketClient
             }
 
             var response = (HttpWebResponse)request.GetResponse();
-
             var responseString = new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd();
+            var imagedata = responseString.Substring(responseString.IndexOf("data") + 9, 36);
+            var imgurl = responseString.Substring(responseString.IndexOf("data") + 9 + 36 + 1, 82).Replace("\\", "");
+            pictureBoxLogin.Load(imgurl);
         }
 
-        private static string GetImageCode()
+        private void btnLogon_Click(object sender, EventArgs e)
         {
-            var currenttime = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string _loc1_ = bidnumber + "." + currenttime; //80658434.20171023140000
+            var request = (HttpWebRequest)WebRequest.Create("https://paimai2.alltobid.com/webwcf/BidCmd.svc/WebCmd");
 
-            byte[] result = Encoding.Default.GetBytes(_loc1_ + currenttime + version);
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] output = md5.ComputeHash(result);
-            string checkcode = BitConverter.ToString(output).Replace("-", "").ToLower();
+            var dto = new LoginDto
+            {
+                version = _version,
+                timestamp = _timestamp,
+                bidnumber = _bidnumber,
+                requestid = _requestid,
+                checkcode = _checkcode,
+                request = new LoginRequestDto
+                {
+                    info = _info,
+                    uniqueid = _uniqueid,
+                    bidnumber = _bidnumber,
+                    bidpassword = _bidpassword,
+                    imagenumber = textBoxImageCode.Text,
+                    idcard = _idcard,
+                    clientId = _clientId,
+                    idtype = _idtype
+                }
+            };
 
-     
-            string _loc3_ = "{requestid:\"" + _loc1_ + "\",timestamp:\"" + currenttime + "\",bidnumber:\"" + bidnumber + "\",checkcode:\"" + checkcode + "\",version:\"" + version + "\"}";
-  
-            var _loc5_ = "{\"method\":\"getimagecode\",\"cmd\":\"" + HttpUtility.UrlEncode(_loc3_) + "\"}";
-            return _loc5_;
+            var json = JsonConvert.SerializeObject(dto);
+            var encodedJson = HttpUtility.UrlEncode(json);
+
+            var postData = new WebCmdDto
+            {
+                method = "login",
+                cmd = encodedJson
+            };
+
+            var postDataJson = JsonConvert.SerializeObject(postData);
+
+            var data = Encoding.ASCII.GetBytes(postDataJson);
+
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.ContentLength = data.Length;
+            request.Referer = "https://paimai2.alltobid.com/bid/2017111801/login.htm";
+
+
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+
+            var response = (HttpWebResponse)request.GetResponse();
         }
     }
 }
