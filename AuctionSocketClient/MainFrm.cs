@@ -16,29 +16,26 @@ namespace AuctionSocketClient
 {
     public partial class MainFrm : Form
     {
-        private bool debug = true;
+        private bool debug = false;
         private string host = "";
         private IPAddress ip;
         private IPEndPoint ipe;
 
-        private string _version = "1.0";
-        private string _timestamp = "1510973511872";
-        private string _bidnumber = "54397068";
-        private string _requestid = "1510973511873";
-        private string _checkcode = "8906ea80b9693d0401305f458e069fbf";
-        private string _info = "Win7;ie:11;27";
-        private string _uniqueid = "3451a8e7-0760-4a42-87f9-317fb509ab42";
-        private string _bidpassword = "912ca04c3a2c1e871e768957246d18f0";
-        private string _imagenumber = "736424";
-        private string _idcard = "";
-        private string _clientId = "";
-        private string _idtype = "0";
+        private static string _timestamp = "";
+        private static string _requestid = "";
+        private static string _version = "1.0";
+        private static string _bidnumber = "";
+        private static string _info = "Win7;ie:11;27";
+        private static string _uniqueid = "";
+        private static string _bidpassword = "";
+        private static string _imagenumber = "";
+        private static string _idcard = "";
+        private static string _clientId = "";
+        private static string _idtype = "0";
+
 
         public MainFrm()
         {
-
-
-
             MessageQueue = new Queue();
             InitializeComponent();
             comboIP.SelectedIndex = 0;
@@ -51,7 +48,7 @@ namespace AuctionSocketClient
             ipe = new IPEndPoint(ip, port);
 
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            
+
         }
         //uid=54465795&uname=鲍洁莹&clientId=42b198991e44411087d5dce78ab18e3c&tradeserverstr=180.153.29.213:8300,180.153.15.118:8300,180.153.24.227:8300,180.153.38.219:8300&informationserverstr=&webserverstr=paimai2.alltobid.com:80&lcserverstr=&auctype=0&pwd=6e08e2b216444285aa310a8785129cd3
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -87,24 +84,24 @@ namespace AuctionSocketClient
                     Thread.Sleep(100);
                     int bytes = clientSocket.Receive(recBytes, recBytes.Length, 0);
                     //Online XXTEA Decrypt https://www.tools4noobs.com/online_tools/xxtea_decrypt/
-                    recStr += "CurrentTime:" + DateTime.Now.ToString("yyyyMMddHHmmssfff") +": ";
+                    recStr += "CurrentTime:" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ": ";
                     //recStr += Encoding.UTF8.GetString(recBytes, 0, bytes);
                     recStr += Encoding.GetEncoding("GB2312").GetString(recBytes, 0, bytes);
 
                     recStr += "\r\n";
-                    MessageQueue.Enqueue(recStr);                   
+                    MessageQueue.Enqueue(recStr);
                     Thread.Sleep(100);
                 }
             }).Start();
 
-                      
+
         }
 
         private void btnOnline_Click(object sender, EventArgs e)
         {
             var currenttime = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             var requestid = bidnumber + ".f" + currenttime;
-            var checkcode = MD5ToString(clientId + bidnumber + version + requestid + version + currenttime).ToLower();
+            var checkcode = EncryptWithMD5(clientId + bidnumber + version + requestid + version + currenttime).ToLower();
             //var ByteArrayCollection;
             var _rawdata = "{requestid:\"" + requestid + "\",timestamp:\"" + currenttime + "\",bidnumber:\"" + bidnumber + "\",checkcode:\"" + checkcode + "\",version:\"" + version + "\"}";
             //TODO:  XXTEA.Base64Encrypte??
@@ -115,7 +112,7 @@ namespace AuctionSocketClient
             {
                 clientSocket.Connect(ipe);
             }
-            SendMessage(clientSocket,_rawdata);
+            SendMessage(clientSocket, _rawdata);
 
         }
 
@@ -144,8 +141,7 @@ namespace AuctionSocketClient
             return 0;
         }
 
-
-        private static string MD5ToString(String argString)
+        private static string EncryptWithMD5(String argString)
         {
             MD5 md5 = new MD5CryptoServiceProvider();
             byte[] data = System.Text.Encoding.Default.GetBytes(argString);
@@ -161,7 +157,6 @@ namespace AuctionSocketClient
             timer1.Enabled = false;
             btnStop.Enabled = false;
             btnStart.Enabled = true;
-            //clientSocket.Close();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -169,10 +164,10 @@ namespace AuctionSocketClient
             if (MessageQueue.Count > 0)
             {
                 var message = MessageQueue.Dequeue();
-                logOutPut.Text += message;              
+                logOutPut.Text += message;
                 logOutPut.Refresh();
                 log.Info(message);
-            }         
+            }
         }
         private void MainFrm_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -182,15 +177,22 @@ namespace AuctionSocketClient
 
         private void btnGetImageCode_Click(object sender, EventArgs e)
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://paimai2.alltobid.com/webwcf/BidCmd.svc/WebCmd");
+            _bidnumber = txtBidNumber.Text;
+            _bidpassword = txtPassword.Text;
+            _idcard = txtidcard.Text;
+            _timestamp = gettimestamp_JS();
+            _requestid = _timestamp;
+
+            //var request = (HttpWebRequest)WebRequest.Create("https://paimai2.alltobid.com/webwcf/BidCmd.svc/WebCmd");
+            var request = (HttpWebRequest)WebRequest.Create("https://paimai.alltobid.com/webwcf/BidCmd.svc/WebCmd");
 
             var dto = new ImageCodeDto
             {
                 version = _version,
                 timestamp = _timestamp,
                 requestid = _requestid,
-                request = "", //request={}
-                checkcode = _checkcode,
+                request = { }, //request={}
+                checkcode = EncryptWithMD5(_timestamp + _requestid + _version)
             };
 
             var json = JsonConvert.SerializeObject(dto);
@@ -209,7 +211,7 @@ namespace AuctionSocketClient
             request.Method = "POST";
             request.ContentType = "application/json";
             request.ContentLength = data.Length;
-            request.Referer = "https://paimai2.alltobid.com/bid/2017111801/login.htm";
+            request.Referer = "https://paimai.alltobid.com/pubbid/2017112001/login.htm";
 
 
             using (var stream = request.GetRequestStream())
@@ -220,28 +222,31 @@ namespace AuctionSocketClient
             var response = (HttpWebResponse)request.GetResponse();
             var responseString = new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd();
             var imagedata = responseString.Substring(responseString.IndexOf("data") + 9, 36);
-            var imgurl = responseString.Substring(responseString.IndexOf("data") + 9 + 36 + 1, 82).Replace("\\", "");
+            _uniqueid = imagedata;
+            var imgurl = responseString.Substring(responseString.IndexOf("data") + 9 + 36 + 1, 81).Replace("\\", "");
             pictureBoxLogin.Load(imgurl);
         }
 
         private void btnLogon_Click(object sender, EventArgs e)
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://paimai2.alltobid.com/webwcf/BidCmd.svc/WebCmd");
-
+            _imagenumber = txtImageNumber.Text;
+            var request = (HttpWebRequest)WebRequest.Create("https://paimai.alltobid.com/webwcf/BidCmd.svc/WebCmd");
+            _timestamp = gettimestamp_JS();
+            _requestid = getrequestid_JS();
             var dto = new LoginDto
             {
                 version = _version,
                 timestamp = _timestamp,
                 bidnumber = _bidnumber,
                 requestid = _requestid,
-                checkcode = _checkcode,
+                checkcode = EncryptWithMD5(EncryptWithMD5(_bidnumber + _bidpassword) + _bidnumber + _imagenumber + _idcard + _requestid + _uniqueid + _version),
                 request = new LoginRequestDto
                 {
                     info = _info,
                     uniqueid = _uniqueid,
                     bidnumber = _bidnumber,
-                    bidpassword = _bidpassword,
-                    imagenumber = textBoxImageCode.Text,
+                    bidpassword = EncryptWithMD5(_bidnumber+_bidpassword),
+                    imagenumber = _imagenumber,
                     idcard = _idcard,
                     clientId = _clientId,
                     idtype = _idtype
@@ -273,6 +278,66 @@ namespace AuctionSocketClient
             }
 
             var response = (HttpWebResponse)request.GetResponse();
+            var responseString = new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd();
+
+            SetCookie(JsonConvert.DeserializeObject(responseString));
+        }
+
+        private static string gettimestamp_JS()
+        {
+            long lLeft = 621355968000000000;
+            DateTime dt = DateTime.Now;
+            long timestamp = (dt.Ticks - lLeft) / 10000;
+            return timestamp.ToString();
+        }
+
+        private static string getrequestid_JS()
+        {
+            return gettimestamp_JS();
+        }
+
+        //private static string getcheckcode_JS()
+        //{
+        //    return gettimestamp_JS() + getrequestid_JS() + _version;
+        //}
+        //private static string getcheckcode2_JS()
+        //{
+        //    return EncryptWithMD5(_bidnumber + _bidpassword) + _bidnumber + _imagenumber + _idcard + getrequestid_JS() + _uniqueid + _version;
+        //}
+
+        private static void SetCookie(Object logindata)
+        {
+            //System.Web.HttpCookie newcookie = new HttpCookie("logindata");
+            //newcookie.Values["bidnumber"] = _bidnumber;
+            //newcookie.Values["username"] = logindata.name;
+            //newcookie.Values["clientId"+ _bidnumber] = logindata.clientid;
+            //newcookie.Values["bidcount"] = logindata.bidcount;
+            //newcookie.Values["vdate"] = logindata.date;
+            //newcookie.Values["pwd"] = logindata.b;
+            //newcookie.Values["bidcount"] = logindata.bidcount;
+            //var traderserverstr = "";
+            //for (var i = 0; i < logindata.tradeserver.length; i++)
+            //{
+            //    traderserverstr += ',' + logindata.tradeserver[i].server + ':' + logindata.tradeserver[i].port
+            //};
+            //if (traderserverstr != "") traderserverstr = traderserverstr.Substring(1);
+            //newcookie.Values["tradeserver"] = traderserverstr;
+
+            //var webserverstr = "";
+            //for (var k = 0; k < logindata.webserver.length; k++)
+            //{
+            //    webserverstr += ',' + logindata.webserver[k].server + ':' + logindata.webserver[k].port
+            //};
+            //if (webserverstr != "") webserverstr = webserverstr.Substring(1);
+            //newcookie.Values["webserver"] = webserverstr;
+            //Response.AppendCookie(newcookie);          
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var tmp = "";
+            var tmp2 = HttpUtility.UrlDecode(tmp);
+
         }
     }
 }

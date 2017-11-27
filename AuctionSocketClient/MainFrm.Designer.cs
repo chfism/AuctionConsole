@@ -31,7 +31,12 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.logOutPut = new System.Windows.Forms.RichTextBox();
-            this.textBoxImageCode = new System.Windows.Forms.TextBox();
+            this.txtidcard = new System.Windows.Forms.TextBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.txtBidNumber = new System.Windows.Forms.TextBox();
+            this.btnLogon = new System.Windows.Forms.Button();
+            this.btnGetImageCode = new System.Windows.Forms.Button();
+            this.txtImageNumber = new System.Windows.Forms.TextBox();
             this.pictureBoxLogin = new System.Windows.Forms.PictureBox();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnOnline = new System.Windows.Forms.Button();
@@ -39,8 +44,7 @@
             this.comboIP = new System.Windows.Forms.ComboBox();
             this.btnStart = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.btnGetImageCode = new System.Windows.Forms.Button();
-            this.btnLogon = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -60,9 +64,13 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.button1);
+            this.splitContainer1.Panel2.Controls.Add(this.txtidcard);
+            this.splitContainer1.Panel2.Controls.Add(this.txtPassword);
+            this.splitContainer1.Panel2.Controls.Add(this.txtBidNumber);
             this.splitContainer1.Panel2.Controls.Add(this.btnLogon);
             this.splitContainer1.Panel2.Controls.Add(this.btnGetImageCode);
-            this.splitContainer1.Panel2.Controls.Add(this.textBoxImageCode);
+            this.splitContainer1.Panel2.Controls.Add(this.txtImageNumber);
             this.splitContainer1.Panel2.Controls.Add(this.pictureBoxLogin);
             this.splitContainer1.Panel2.Controls.Add(this.btnStop);
             this.splitContainer1.Panel2.Controls.Add(this.btnOnline);
@@ -82,16 +90,60 @@
             this.logOutPut.TabIndex = 0;
             this.logOutPut.Text = "";
             // 
-            // textBoxImageCode
+            // txtidcard
             // 
-            this.textBoxImageCode.Location = new System.Drawing.Point(130, 63);
-            this.textBoxImageCode.Name = "textBoxImageCode";
-            this.textBoxImageCode.Size = new System.Drawing.Size(100, 21);
-            this.textBoxImageCode.TabIndex = 10;
+            this.txtidcard.Location = new System.Drawing.Point(17, 39);
+            this.txtidcard.Name = "txtidcard";
+            this.txtidcard.Size = new System.Drawing.Size(147, 21);
+            this.txtidcard.TabIndex = 15;
+            this.txtidcard.Text = "913101147818633852";
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Location = new System.Drawing.Point(135, 12);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(100, 21);
+            this.txtPassword.TabIndex = 14;
+            this.txtPassword.Text = "2054";
+            // 
+            // txtBidNumber
+            // 
+            this.txtBidNumber.Location = new System.Drawing.Point(17, 12);
+            this.txtBidNumber.Name = "txtBidNumber";
+            this.txtBidNumber.Size = new System.Drawing.Size(100, 21);
+            this.txtBidNumber.TabIndex = 13;
+            this.txtBidNumber.Text = "80658434";
+            // 
+            // btnLogon
+            // 
+            this.btnLogon.Location = new System.Drawing.Point(17, 163);
+            this.btnLogon.Name = "btnLogon";
+            this.btnLogon.Size = new System.Drawing.Size(95, 23);
+            this.btnLogon.TabIndex = 12;
+            this.btnLogon.Text = "Login";
+            this.btnLogon.UseVisualStyleBackColor = true;
+            this.btnLogon.Click += new System.EventHandler(this.btnLogon_Click);
+            // 
+            // btnGetImageCode
+            // 
+            this.btnGetImageCode.Location = new System.Drawing.Point(17, 66);
+            this.btnGetImageCode.Name = "btnGetImageCode";
+            this.btnGetImageCode.Size = new System.Drawing.Size(95, 23);
+            this.btnGetImageCode.TabIndex = 11;
+            this.btnGetImageCode.Text = "GetImageCode";
+            this.btnGetImageCode.UseVisualStyleBackColor = true;
+            this.btnGetImageCode.Click += new System.EventHandler(this.btnGetImageCode_Click);
+            // 
+            // txtImageNumber
+            // 
+            this.txtImageNumber.Location = new System.Drawing.Point(125, 124);
+            this.txtImageNumber.Name = "txtImageNumber";
+            this.txtImageNumber.Size = new System.Drawing.Size(100, 21);
+            this.txtImageNumber.TabIndex = 10;
             // 
             // pictureBoxLogin
             // 
-            this.pictureBoxLogin.Location = new System.Drawing.Point(17, 41);
+            this.pictureBoxLogin.Location = new System.Drawing.Point(17, 95);
             this.pictureBoxLogin.Name = "pictureBoxLogin";
             this.pictureBoxLogin.Size = new System.Drawing.Size(100, 50);
             this.pictureBoxLogin.TabIndex = 9;
@@ -132,9 +184,9 @@
             // 
             this.comboIP.FormattingEnabled = true;
             this.comboIP.Items.AddRange(new object[] {
+            "180.153.38.219",
             "180.153.29.213",
             "180.153.15.118",
-            "180.153.38.219",
             "180.153.24.227"});
             this.comboIP.Location = new System.Drawing.Point(104, 249);
             this.comboIP.Name = "comboIP";
@@ -155,25 +207,15 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // btnGetImageCode
+            // button1
             // 
-            this.btnGetImageCode.Location = new System.Drawing.Point(17, 12);
-            this.btnGetImageCode.Name = "btnGetImageCode";
-            this.btnGetImageCode.Size = new System.Drawing.Size(95, 23);
-            this.btnGetImageCode.TabIndex = 11;
-            this.btnGetImageCode.Text = "GetImageCode";
-            this.btnGetImageCode.UseVisualStyleBackColor = true;
-            this.btnGetImageCode.Click += new System.EventHandler(this.btnGetImageCode_Click);
-            // 
-            // btnLogon
-            // 
-            this.btnLogon.Location = new System.Drawing.Point(17, 114);
-            this.btnLogon.Name = "btnLogon";
-            this.btnLogon.Size = new System.Drawing.Size(95, 23);
-            this.btnLogon.TabIndex = 12;
-            this.btnLogon.Text = "Login";
-            this.btnLogon.UseVisualStyleBackColor = true;
-            this.btnLogon.Click += new System.EventHandler(this.btnLogon_Click);
+            this.button1.Location = new System.Drawing.Point(130, 163);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(95, 23);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "Test";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainFrm
             // 
@@ -205,9 +247,13 @@
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox pictureBoxLogin;
-        private System.Windows.Forms.TextBox textBoxImageCode;
+        private System.Windows.Forms.TextBox txtImageNumber;
         private System.Windows.Forms.Button btnGetImageCode;
         private System.Windows.Forms.Button btnLogon;
+        private System.Windows.Forms.TextBox txtBidNumber;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.TextBox txtidcard;
+        private System.Windows.Forms.Button button1;
     }
 }
 
