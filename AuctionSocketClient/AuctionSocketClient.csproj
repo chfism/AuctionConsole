@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base64.cs" />
+    <Compile Include="Dto\Bytes0_0Dto.cs" />
     <Compile Include="Dto\ImageCodeDto.cs" />
     <Compile Include="Dto\LoginRequestDto.cs" />
     <Compile Include="Log4Net.Designer.cs">

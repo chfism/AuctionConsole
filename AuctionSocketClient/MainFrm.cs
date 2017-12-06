@@ -112,32 +112,13 @@ namespace AuctionSocketClient
             {
                 clientSocket.Connect(ipe);
             }
-            SendMessage(clientSocket, _rawdata);
+            //SendMessage("1-1", userModel.bytes1_1);
 
         }
 
-        public static int SendMessage(Socket clientSocket, string sentmsg)
+        public static int SendMessage(string command, byte[] sentmsg)
         {
-            byte[] msg = Encoding.UTF8.GetBytes(sentmsg);
-            //byte[] msg = Encoding.GetEncoding("GB2312").GetBytes(sentmsg);
-            byte[] bytes = new byte[256];
-            try
-            {
-                // Blocks until send returns.
-                int i = clientSocket.Send(msg, msg.Length, SocketFlags.None);
-                Console.WriteLine("Sent {0} bytes.", i);
-
-                // Get reply from the server.
-                int byteCount = clientSocket.Receive(bytes, clientSocket.Available,
-                                                   SocketFlags.None);
-                if (byteCount > 0)
-                    Console.WriteLine(Encoding.UTF8.GetString(bytes));
-            }
-            catch (SocketException e)
-            {
-                Console.WriteLine("{0} Error code: {1}.", e.Message, e.ErrorCode);
-                return (e.ErrorCode);
-            }
+            //TODO SocketPackUtil.setPackHeader(param1,param2)
             return 0;
         }
 
@@ -168,12 +149,12 @@ namespace AuctionSocketClient
                 logOutPut.Refresh();
                 log.Info(message);
             }
+            SendHeartMessage();
         }
         private void MainFrm_FormClosed(object sender, FormClosedEventArgs e)
         {
             clientSocket.Close();
         }
-
 
         private void btnGetImageCode_Click(object sender, EventArgs e)
         {
@@ -296,15 +277,6 @@ namespace AuctionSocketClient
             return gettimestamp_JS();
         }
 
-        //private static string getcheckcode_JS()
-        //{
-        //    return gettimestamp_JS() + getrequestid_JS() + _version;
-        //}
-        //private static string getcheckcode2_JS()
-        //{
-        //    return EncryptWithMD5(_bidnumber + _bidpassword) + _bidnumber + _imagenumber + _idcard + getrequestid_JS() + _uniqueid + _version;
-        //}
-
         private static void SetCookie(Object logindata)
         {
             //System.Web.HttpCookie newcookie = new HttpCookie("logindata");
@@ -333,11 +305,64 @@ namespace AuctionSocketClient
             //Response.AppendCookie(newcookie);          
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private static void SendHeartMessage()
         {
-            var tmp = "";
-            var tmp2 = HttpUtility.UrlDecode(tmp);
+            var dto = new Bytes0_0Dto
+            {
+                ts = createTimestamp()
+            };
 
+            var json = JsonConvert.SerializeObject(dto);
+
+            SendMessage("0-0",EncryptWithXXTEA(json) );
         }
+
+        private static string createTimestamp()
+        {
+            DateTime now = DateTime.Now;
+            return now.Hour.ToString() + now.Minute.ToString() + now.Second.ToString() + now.Millisecond.ToString();
+        }
+
+        private static byte[] EncryptWithXXTEA(String argString)
+        {
+            //string keyStr = "shcarbid";
+            string keyStr = "ji!@p!a".Substring(2, 5);
+            byte[] key = System.Text.Encoding.UTF8.GetBytes(keyStr);
+            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(argString);
+            byte[] encryptData = XXTEA.Encrypt(byteArray,key);
+
+            return encryptData;
+        }
+
+        public static byte[] SetPackHeader(String header, byte[] data)
+        {
+   
+            string[] headerArr = header.Split('-');
+            //trace(data.length+4+2)
+            byte[] appendHeaderPack = new byte[4096];
+            //整包长度= 包体长度+主包头+子包头;
+            //4字节 表示包长度
+            appendHeaderPack.toUInt32(data.Length + 4 + 1 + 1);
+            appendHeaderPack.toUInt8(headerArr[0]);
+            appendHeaderPack.toUInt8(headerArr[1]);
+            appendHeaderPack.writeBytes(data);
+
+            /*1字节 8位整数 0 和 255 之间的 32 位无符号整数
+            public function toUInt8(value:int):void {
+                if (value > 255) value = 255;
+                this.writeByte(value);
+            }4字节 代表无符号32位整数，取值范围在 0 ~ 4,294,967,295之间
+            public function toUInt32(value:uint):void
+		{
+		   	if (value > 4294967295) value = 4294967295;			
+			this.writeUnsignedInt(value);
+		}
+            */
+
+            return appendHeaderPack;
+        }
+
+        
+
     }
 }
