@@ -11,6 +11,7 @@ using log4net;
 using System.Web;
 using AuctionSocketClient.Dto;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace AuctionSocketClient
 {
@@ -18,8 +19,8 @@ namespace AuctionSocketClient
     {
         private bool debug = false;
         private string host = "";
-        private IPAddress ip;
-        private IPEndPoint ipe;
+        private static IPAddress ip;
+        private static IPEndPoint ipe;
 
         private static string _timestamp = "";
         private static string _requestid = "";
@@ -50,7 +51,7 @@ namespace AuctionSocketClient
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         }
-        //uid=54465795&uname=鲍洁莹&clientId=42b198991e44411087d5dce78ab18e3c&tradeserverstr=180.153.29.213:8300,180.153.15.118:8300,180.153.24.227:8300,180.153.38.219:8300&informationserverstr=&webserverstr=paimai2.alltobid.com:80&lcserverstr=&auctype=0&pwd=6e08e2b216444285aa310a8785129cd3
+        //uid=54465795&uname=鲍XX&clientId=42b198991e44411087d5dce78ab18e3c&tradeserverstr=180.153.29.213:8300,180.153.15.118:8300,180.153.24.227:8300,180.153.38.219:8300&informationserverstr=&webserverstr=paimai2.alltobid.com:80&lcserverstr=&auctype=0&pwd=6e08e2b216444285aa310a8785129cd3
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static string key = "ji!@p!a".Substring(2, 5);
         private static string clientId = "42b198991e44411087d5dce78ab18e3c";
@@ -118,7 +119,11 @@ namespace AuctionSocketClient
 
         public static int SendMessage(string command, byte[] sentmsg)
         {
-            //TODO SocketPackUtil.setPackHeader(param1,param2)
+            if (clientSocket.Connected == false)
+            {
+                clientSocket.Connect(ipe);
+            }
+            clientSocket.Send(SetPackHeader(command, sentmsg));
             return 0;
         }
 
@@ -336,33 +341,62 @@ namespace AuctionSocketClient
 
         public static byte[] SetPackHeader(String header, byte[] data)
         {
-   
-            string[] headerArr = header.Split('-');
-            //trace(data.length+4+2)
-            byte[] appendHeaderPack = new byte[4096];
-            //整包长度= 包体长度+主包头+子包头;
-            //4字节 表示包长度
-            appendHeaderPack.toUInt32(data.Length + 4 + 1 + 1);
-            appendHeaderPack.toUInt8(headerArr[0]);
-            appendHeaderPack.toUInt8(headerArr[1]);
-            appendHeaderPack.writeBytes(data);
+            var headerArr = header.Split('-');
+            var header0 = headerArr[0][0];
+            var header1 = headerArr[1][0];
+            var convertedHeader0 = ToUInt8(header0);
+            var convertedHeader1 = ToUInt8(header1);
+            var length = ToUInt32(data.Length + 4 + 1 + 1);
+            var byteList = new List<byte>();
 
-            /*1字节 8位整数 0 和 255 之间的 32 位无符号整数
-            public function toUInt8(value:int):void {
-                if (value > 255) value = 255;
-                this.writeByte(value);
-            }4字节 代表无符号32位整数，取值范围在 0 ~ 4,294,967,295之间
-            public function toUInt32(value:uint):void
-		{
-		   	if (value > 4294967295) value = 4294967295;			
-			this.writeUnsignedInt(value);
-		}
-            */
+            var byteToWrite = BitConverter.GetBytes(length);
+            byteList.AddRange(byteToWrite);
 
-            return appendHeaderPack;
+            byteList.Add(convertedHeader0);
+            byteList.Add(convertedHeader1);
+
+            return byteList.ToArray();
+
+
+
+            //          string[] headerArr = header.Split('-');
+            //          //trace(data.length+4+2)
+            //          byte[] appendHeaderPack = new byte[4096];
+            //          //整包长度= 包体长度+主包头+子包头;
+            //          //4字节 表示包长度
+            //          appendHeaderPack.toUInt32(data.Length + 4 + 1 + 1);
+            //          appendHeaderPack.toUInt8(headerArr[0]);
+            //          appendHeaderPack.toUInt8(headerArr[1]);
+            //          appendHeaderPack.writeBytes(data);
+
+            //          /*1字节 8位整数 0 和 255 之间的 32 位无符号整数
+            //          public function toUInt8(value:int):void {
+            //              if (value > 255) value = 255;
+            //              this.writeByte(value);
+            //          }4字节 代表无符号32位整数，取值范围在 0 ~ 4,294,967,295之间
+            //          public function toUInt32(value:uint):void
+            //{
+            //   	if (value > 4294967295) value = 4294967295;			
+            //	this.writeUnsignedInt(value);
+            //}
+            //          */
+
+            //          return appendHeaderPack;
         }
 
-        
+        private static byte ToUInt8(int value)
+        {
+            if (value > 255)
+                value = 255;
+            return (byte)value;
+        }
 
+
+        private static uint ToUInt32(int value)
+        {
+            //if (value > 4294967295)
+            //    value = 4294967295;
+            return (uint)value;
+        }
     }
 }
