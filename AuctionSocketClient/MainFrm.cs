@@ -84,7 +84,6 @@ namespace AuctionSocketClient
 
                     Thread.Sleep(100);
                     int bytes = clientSocket.Receive(recBytes, recBytes.Length, 0);
-                    //Online XXTEA Decrypt https://www.tools4noobs.com/online_tools/xxtea_decrypt/
                     recStr += "CurrentTime:" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ": ";
                     //recStr += Encoding.UTF8.GetString(recBytes, 0, bytes);
                     recStr += Encoding.GetEncoding("GB2312").GetString(recBytes, 0, bytes);
@@ -100,29 +99,19 @@ namespace AuctionSocketClient
 
         private void btnOnline_Click(object sender, EventArgs e)
         {
-            var currenttime = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-            var requestid = bidnumber + ".f" + currenttime;
-            var checkcode = EncryptWithMD5(clientId + bidnumber + version + requestid + version + currenttime).ToLower();
-            //var ByteArrayCollection;
-            var _rawdata = "{requestid:\"" + requestid + "\",timestamp:\"" + currenttime + "\",bidnumber:\"" + bidnumber + "\",checkcode:\"" + checkcode + "\",version:\"" + version + "\"}";
-            //TODO:  XXTEA.Base64Encrypte??
-            //string _encryptedstr = XXTEA.Base64Encrypted(_rawdata);
-            //ByteArrayCollection.toStr(_encryptedstr);
-
-            if (clientSocket.Connected == false)
-            {
-                clientSocket.Connect(ipe);
-            }
-            //SendMessage("1-1", userModel.bytes1_1);
-
+            //if (clientSocket.Connected == false)
+            //{
+            //    clientSocket.Connect(ipe);
+            //}
+            SendOnlineMessage();
         }
 
         public static int SendMessage(string command, byte[] sentmsg)
         {
-            if (clientSocket.Connected == false)
-            {
-                clientSocket.Connect(ipe);
-            }
+            //if (clientSocket.Connected == false)
+            //{
+            //    clientSocket.Connect(ipe);
+            //}
             clientSocket.Send(SetPackHeader(command, sentmsg));
             return 0;
         }
@@ -282,6 +271,11 @@ namespace AuctionSocketClient
             return gettimestamp_JS();
         }
 
+        private static string getrequestid_AS()
+        {
+            return _bidnumber + "." + createTimestamp();
+        }
+
         private static void SetCookie(Object logindata)
         {
             //System.Web.HttpCookie newcookie = new HttpCookie("logindata");
@@ -322,6 +316,27 @@ namespace AuctionSocketClient
             SendMessage("0-0",EncryptWithXXTEA(json) );
         }
 
+        //"投标板块","上线1-1"
+        private static void SendOnlineMessage()
+        {
+            var _timestamp = createTimestamp();
+            var _requestid = _bidnumber + "." + _timestamp;
+            var dto = new Bytes1_1Dto
+            {
+                requestid = _requestid,
+                timestamp = _timestamp,
+                bidnumber = _bidnumber,
+                //checkcode = EncryptWithMD5(_bidnumber+ _clientId+ _requestid+ _timestamp+ _version).ToLower()),
+                //反编译出来的checkcode版本
+                checkcode = EncryptWithMD5((_clientId + _bidnumber + _version + _requestid + _version + _timestamp).ToLower()),
+                version = _version
+            };
+
+            var json = JsonConvert.SerializeObject(dto);
+
+            SendMessage("1-1", EncryptWithXXTEA(json));
+        }
+
         private static string createTimestamp()
         {
             DateTime now = DateTime.Now;
@@ -342,8 +357,8 @@ namespace AuctionSocketClient
         public static byte[] SetPackHeader(String header, byte[] data)
         {
             var headerArr = header.Split('-');
-            var header0 = headerArr[0][0];
-            var header1 = headerArr[1][0];
+            var header0 = int.Parse(headerArr[0]);
+            var header1 = int.Parse(headerArr[1]);
             var convertedHeader0 = ToUInt8(header0);
             var convertedHeader1 = ToUInt8(header1);
             var length = ToUInt32(data.Length + 4 + 1 + 1);
@@ -354,10 +369,8 @@ namespace AuctionSocketClient
 
             byteList.Add(convertedHeader0);
             byteList.Add(convertedHeader1);
-
+            byteList.AddRange(data);
             return byteList.ToArray();
-
-
 
             //          string[] headerArr = header.Split('-');
             //          //trace(data.length+4+2)
@@ -397,6 +410,11 @@ namespace AuctionSocketClient
             //if (value > 4294967295)
             //    value = 4294967295;
             return (uint)value;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SendHeartMessage();
         }
     }
 }
