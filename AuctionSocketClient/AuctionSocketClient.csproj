@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base64.cs" />
+    <Compile Include="Dto\ResponseResultDto.cs" />
+    <Compile Include="Dto\ResponseDto.cs" />
     <Compile Include="Dto\Bytes1_1Dto.cs" />
     <Compile Include="Dto\Bytes0_0Dto.cs" />
     <Compile Include="Dto\ImageCodeDto.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="MainFrm.Designer.cs">
       <DependentUpon>MainFrm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PriceParseControl.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Dto\WebCmdDto.cs" />

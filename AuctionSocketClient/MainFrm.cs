@@ -416,5 +416,6 @@ namespace AuctionSocketClient
         {
             SendHeartMessage();
         }
+      
     }
 }
